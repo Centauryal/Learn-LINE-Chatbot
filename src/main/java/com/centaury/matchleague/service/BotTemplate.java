@@ -1,7 +1,7 @@
 package com.centaury.matchleague.service;
 
 import com.centaury.matchleague.model.League;
-import com.centaury.matchleague.model.Match;
+import com.centaury.matchleague.model.match.Match;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
@@ -12,6 +12,7 @@ import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.profile.UserProfileResponse;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -52,17 +53,16 @@ public class BotTemplate {
 
     public TemplateMessage carouselKompetisiLiga(List<League> leagues) {
         int i;
-        String id, name, desc;
+        String name, desc;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         for (i = 0; i < leagues.size(); i++) {
-            id = leagues.get(i).getLeagueId().toString();
             name = leagues.get(i).getName();
             desc = leagues.get(i).getDesc();
 
             column = new CarouselColumn(null, null,
-                    name, desc, new MessageAction("Jadwal", "Kompetisi liga " + id), null);
+                    name, desc, new MessageAction("Jadwal", "Kompetisi liga " + name), null);
 
             carouselColumns.add(column);
         }
@@ -71,14 +71,15 @@ public class BotTemplate {
         return new TemplateMessage("Kompetisi Liga", carouselTemplate);
     }
 
-    public TemplateMessage carouselJadwal(Match match) {
+    public TemplateMessage carouselJadwalLiga(Match match) {
         int i;
-        String team, matchDate = null;
+        String team, league, matchDate = null;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         for (i = 0; i < match.getMatches().size(); i++) {
             team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
+            league = match.getCompetition().getName();
 
             DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
             DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
@@ -92,12 +93,17 @@ public class BotTemplate {
             }
 
             column = new CarouselColumn(null, null,
-                    matchDate, team, new MessageAction("Detail", "Jadwal Pertandingan:\n" + team), null);
+                    matchDate, team, new MessageAction("Detail", "[" + (i + 1) + "]" +
+                    "Jadwal Pertandingan" + league + ":\n" + team), null);
 
             carouselColumns.add(column);
         }
 
         CarouselTemplate carouselTemplate = new CarouselTemplate(carouselColumns);
         return new TemplateMessage("Pertandingan", carouselTemplate);
+    }
+
+    public String escape(String text) {
+        return StringEscapeUtils.escapeJson(text.trim());
     }
 }

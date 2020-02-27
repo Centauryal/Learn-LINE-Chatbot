@@ -1,4 +1,4 @@
-package com.centaury.matchleague.model;
+package com.centaury.matchleague.model.match;
 
 /**
  * Created by JacksonGenerator on 2/24/20.

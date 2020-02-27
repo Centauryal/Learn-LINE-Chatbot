@@ -1,0 +1,129 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "Jadwal Pertandingan",
+        "size": "lg",
+        "weight": "bold",
+        "position": "relative",
+        "align": "center",
+        "wrap": true,
+        "color": "#FFFFFF"
+      }
+    ]
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "%1$s",
+        "weight": "bold",
+        "size": "md",
+        "wrap": true,
+        "align": "start"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "spacing": "none",
+            "contents": [
+              {
+                "type": "image",
+                "url": "%2$s",
+                "align": "center",
+                "gravity": "center"
+              },
+              {
+                "type": "filler"
+              },
+              {
+                "type": "image",
+                "url": "%3$s",
+                "align": "center",
+                "gravity": "center"
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "%4$s",
+                "size": "md",
+                "align": "center",
+                "gravity": "center",
+                "wrap": true
+              },
+              {
+                "type": "filler"
+              },
+              {
+                "type": "text",
+                "text": "%5$s",
+                "size": "md",
+                "align": "center",
+                "gravity": "center",
+                "wrap": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "%6$s",
+            "size": "sm",
+            "align": "center",
+            "gravity": "center",
+            "wrap": true
+          },
+          {
+            "type": "text",
+            "text": "%7$s",
+            "size": "md",
+            "gravity": "center",
+            "align": "center",
+            "wrap": true,
+            "margin": "sm"
+          },
+          {
+            "type": "text",
+            "text": "%8$s",
+            "size": "md",
+            "align": "center",
+            "gravity": "center",
+            "wrap": true
+          }
+        ],
+        "margin": "xl"
+      },
+      {
+        "type": "spacer"
+      }
+    ]
+  },
+  "styles": {
+    "header": {
+      "backgroundColor": "#3498db"
+    }
+  }
+}

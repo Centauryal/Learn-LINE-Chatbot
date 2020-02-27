@@ -1,15 +1,13 @@
-package com.centaury.matchleague.model;
+package com.centaury.matchleague.model.team;
 
 /**
- * Created by JacksonGenerator on 2/24/20.
+ * Created by JacksonGenerator on 2/27/20.
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class Competition {
-    @JsonProperty("area")
-    private Area area;
+public class ActiveCompetitionsItem {
     @JsonProperty("lastUpdated")
     private String lastUpdated;
     @JsonProperty("code")

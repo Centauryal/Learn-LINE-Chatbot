@@ -1,4 +1,4 @@
-package com.centaury.matchleague.model;
+package com.centaury.matchleague.model.match;
 
 /**
  * Created by JacksonGenerator on 2/24/20.
@@ -20,8 +20,6 @@ public class MatchesItem {
     private Integer matchday;
     @JsonProperty("awayTeam")
     private AwayTeam awayTeam;
-    @JsonProperty("season")
-    private Season season;
     @JsonProperty("homeTeam")
     private HomeTeam homeTeam;
     @JsonProperty("id")
@@ -73,14 +71,6 @@ public class MatchesItem {
 
     public void setAwayTeam(AwayTeam awayTeam) {
         this.awayTeam = awayTeam;
-    }
-
-    public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
     }
 
     public HomeTeam getHomeTeam() {

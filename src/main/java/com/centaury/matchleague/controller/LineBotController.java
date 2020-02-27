@@ -2,7 +2,9 @@ package com.centaury.matchleague.controller;
 
 import com.centaury.matchleague.model.League;
 import com.centaury.matchleague.model.LineJadwalLigaModel;
-import com.centaury.matchleague.model.Match;
+import com.centaury.matchleague.model.match.Match;
+import com.centaury.matchleague.model.match.MatchesItem;
+import com.centaury.matchleague.model.team.Team;
 import com.centaury.matchleague.service.BotService;
 import com.centaury.matchleague.service.BotTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +19,11 @@ import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
 import com.linecorp.bot.model.event.source.Source;
 import com.linecorp.bot.model.event.source.UserSource;
+import com.linecorp.bot.model.message.FlexMessage;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.flex.container.FlexContainer;
 import com.linecorp.bot.model.objectmapper.ModelObjectMapper;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import org.apache.commons.io.IOUtils;
@@ -37,8 +41,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -58,9 +64,13 @@ public class LineBotController {
     @Autowired
     private Environment mEnv;
 
+    private List<League> leagueList = new ArrayList<>();
     private UserProfileResponse sender = null;
-    private List<League> league = new ArrayList<>();
     private Match match = null;
+    private Team team = null;
+    private DateFormat useDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private Calendar calendar = Calendar.getInstance();
+    private String nowDate, weekDate;
 
     @RequestMapping(value = "/webhook", method = RequestMethod.POST)
     public ResponseEntity<String> callback(
@@ -148,13 +158,12 @@ public class LineBotController {
             } else {
                 botService.leaveGroup(groupId);
             }
-        } else if (msgText.contains("jadwal pertandingan")
-        ) {
-            processJadwalDetail(replyToken, textMessage);
         } else if (msgText.contains("lihat liga")) {
             showCarouselKompetisiLiga(replyToken);
-        } else if (msgText.contains("jadwal")) {
-            showEventSummary(replyToken, textMessage);
+        } else if (msgText.contains("kompetisi liga")) {
+            showCarouselJadwalLiga(replyToken, textMessage);
+        } else if (msgText.contains("jadwal pertandingan")) {
+            showJadwalDetail(replyToken, textMessage);
         } else {
             handleFallbackMessage(replyToken, new GroupSource(groupId, sender.getUserId()));
         }
@@ -168,13 +177,12 @@ public class LineBotController {
             } else {
                 botService.leaveRoom(roomId);
             }
-        } else if (msgText.contains("jadwal pertandingan")
-        ) {
-            processJadwalDetail(replyToken, msgText);
         } else if (msgText.contains("lihat liga")) {
             showCarouselKompetisiLiga(replyToken);
-        } else if (msgText.contains("jadwal")) {
-            showEventSummary(replyToken, textMessage);
+        } else if (msgText.contains("kompetisi liga")) {
+            showCarouselJadwalLiga(replyToken, textMessage);
+        } else if (msgText.contains("jadwal pertandingan")) {
+            showJadwalDetail(replyToken, textMessage);
         } else {
             handleFallbackMessage(replyToken, new RoomSource(roomId, sender.getUserId()));
         }
@@ -182,13 +190,12 @@ public class LineBotController {
 
     private void handleOneOnOneChats(String replyToken, String textMessage) {
         String msgText = textMessage.toLowerCase();
-        if (msgText.contains("jadwal pertandingan")
-        ) {
-            processJadwalDetail(replyToken, msgText);
-        } else if (msgText.contains("lihat liga")) {
+        if (msgText.contains("lihat liga")) {
             showCarouselKompetisiLiga(replyToken);
-        } else if (msgText.contains("jadwal")) {
-            showEventSummary(replyToken, textMessage);
+        } else if (msgText.contains("kompetisi liga")) {
+            showCarouselJadwalLiga(replyToken, textMessage);
+        } else if (msgText.contains("jadwal pertandingan")) {
+            showJadwalDetail(replyToken, textMessage);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
         }
@@ -196,15 +203,6 @@ public class LineBotController {
 
     private void handleFallbackMessage(String replyToken, Source source) {
         greetingMessage(replyToken, source, "Hi " + sender.getDisplayName() + ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
-    }
-
-    private void processJadwalDetail(String replyToken, String messageText) {
-        String[] words = messageText.trim().split("\\s+");
-        String intent = words[0];
-
-        if (intent.equalsIgnoreCase("jadwal pertandingan")) {
-            handleDetail(replyToken, words);
-        }
     }
 
     private void messageHelp(String replyToken) {
@@ -216,20 +214,8 @@ public class LineBotController {
         botService.replyText(replyToken, messages.toArray(new String[messages.size()]));
     }
 
-    private void showCarouselKompetisiLiga(String replyToken) {
-        messageHelp(replyToken);
-
-        if (league == null || league.size() < 1) {
-            getKompetisiLigaData();
-        }
-
-        TemplateMessage kompetisiLiga = botTemplate.carouselKompetisiLiga(league);
-        botService.reply(replyToken, kompetisiLiga);
-    }
-
     private void getKompetisiLigaData() {
 
-        List<League> leagueList = new ArrayList<>();
         leagueList.add(new League(
                 2021,
                 "Premier League",
@@ -272,19 +258,181 @@ public class LineBotController {
             Future<HttpResponse> future = client.execute(get, null);
             HttpResponse responseGet = future.get();
             System.out.println("HTTP executed");
-            System.out.println("HTTP Status of response: " + responseGet.getStatusLine().getStatusCode());
+            System.out.println("HTTP Status of response liga: " + responseGet.getStatusLine().getStatusCode());
 
             // Get the response from the GET request
             InputStream inputStream = responseGet.getEntity().getContent();
             String encoding = StandardCharsets.UTF_8.name();
             String jsonResponse = IOUtils.toString(inputStream, encoding);
 
-            System.out.println("Got result");
+            System.out.println("Got result liga");
             System.out.println(jsonResponse);
 
             ObjectMapper objectMapper = new ObjectMapper();
-            //dicodingEvents = objectMapper.readValue(jsonResponse, DicodingEvents.class);
+            match = objectMapper.readValue(jsonResponse, Match.class);
         } catch (InterruptedException | ExecutionException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void getTeamDetailData(Integer teamId) {
+        // Act as client with GET method
+        String URI = "https://api.football-data.org/v2/teams/" + teamId;
+        System.out.println("URI: " + URI);
+
+        try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
+            client.start();
+            //Use HTTP Get to retrieve data
+            HttpGet get = new HttpGet(URI);
+            get.addHeader("X-Auth-Token", mEnv.getProperty("API_KEY"));
+
+            Future<HttpResponse> future = client.execute(get, null);
+            HttpResponse responseGet = future.get();
+            System.out.println("HTTP executed");
+            System.out.println("HTTP Status of response team: " + responseGet.getStatusLine().getStatusCode());
+
+            // Get the response from the GET request
+            InputStream inputStream = responseGet.getEntity().getContent();
+            String encoding = StandardCharsets.UTF_8.name();
+            String jsonResponse = IOUtils.toString(inputStream, encoding);
+
+            System.out.println("Got result team");
+            System.out.println(jsonResponse);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            team = objectMapper.readValue(jsonResponse, Team.class);
+        } catch (InterruptedException | ExecutionException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void showCarouselKompetisiLiga(String replyToken) {
+        messageHelp(replyToken);
+
+        if (leagueList == null || leagueList.size() < 1) {
+            getKompetisiLigaData();
+        }
+
+        TemplateMessage kompetisiLiga = botTemplate.carouselKompetisiLiga(leagueList);
+        botService.reply(replyToken, kompetisiLiga);
+    }
+
+    private void showCarouselJadwalLiga(String replyToken, String textName) {
+        String nameLeague = textName.toLowerCase();
+
+        Date currentDate = calendar.getTime();
+        nowDate = useDate.format(currentDate);
+
+        calendar.add(Calendar.DATE, 6);
+        Date nextWeek = calendar.getTime();
+        weekDate = useDate.format(nextWeek);
+
+        if (nameLeague.contains("premier league")) {
+            getJadwalLigaData(2021, nowDate, weekDate);
+        } else if (nameLeague.contains("laliga santander")) {
+            getJadwalLigaData(2014, nowDate, weekDate);
+        } else if (nameLeague.contains("bundesliga")) {
+            getJadwalLigaData(2002, nowDate, weekDate);
+        } else if (nameLeague.contains("eredivisie")) {
+            getJadwalLigaData(2003, nowDate, weekDate);
+        } else if (nameLeague.contains("ligue 1")) {
+            getJadwalLigaData(2015, nowDate, weekDate);
+        } else {
+            handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
+        }
+
+        TemplateMessage jadwalLiga = botTemplate.carouselJadwalLiga(match);
+        botService.reply(replyToken, jadwalLiga);
+    }
+
+    private void showJadwalDetail(String replyToken, String textName) {
+        String league = textName.toLowerCase();
+        Date currentDate = calendar.getTime();
+        nowDate = useDate.format(currentDate);
+
+        calendar.add(Calendar.DATE, 6);
+        Date nextWeek = calendar.getTime();
+        weekDate = useDate.format(nextWeek);
+
+        try {
+            if (match == null) {
+                if (league.contains("premier league")) {
+                    getJadwalLigaData(2021, nowDate, weekDate);
+                } else if (league.contains("primera division")) {
+                    getJadwalLigaData(2014, nowDate, weekDate);
+                } else if (league.contains("bundesliga")) {
+                    getJadwalLigaData(2002, nowDate, weekDate);
+                } else if (league.contains("eredivisie")) {
+                    getJadwalLigaData(2003, nowDate, weekDate);
+                } else if (league.contains("ligue 1")) {
+                    getJadwalLigaData(2015, nowDate, weekDate);
+                } else {
+                    handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
+                }
+            }
+
+            int matchIndex = Integer.parseInt(String.valueOf(textName.charAt(1))) - 1;
+            MatchesItem matchesItem = match.getMatches().get(matchIndex);
+
+            String imgHomeTeam = "";
+            String nameHomeTeam = "";
+            String venueHomeTeam = "";
+            String addressHomeTeam = "";
+            String imgAwayTeam = "";
+            String nameAwayTeam = "";
+
+            int homeTeamId = matchesItem.getHomeTeam().getId();
+            if (homeTeamId != 0) {
+                getTeamDetailData(homeTeamId);
+                if (team != null) {
+                    imgHomeTeam = team.getCrestUrl();
+                    nameHomeTeam = team.getName();
+                    venueHomeTeam = team.getVenue();
+                    addressHomeTeam = team.getAddress();
+                }
+            }
+
+            int awayTeamId = matchesItem.getAwayTeam().getId();
+            if (awayTeamId != 0) {
+                team = new Team();
+                getTeamDetailData(awayTeamId);
+                if (team != null) {
+                    imgAwayTeam = team.getCrestUrl();
+                    nameAwayTeam = team.getName();
+                }
+            }
+
+            ClassLoader classLoader = getClass().getClassLoader();
+            String encoding = StandardCharsets.UTF_8.name();
+            String flexTemplate = IOUtils.toString(classLoader.getResourceAsStream("flex_detailjadwal.json"), encoding);
+
+            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
+            DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            String matchDate = "";
+            try {
+                Date date = inputDate.parse(matchesItem.getUtcDate());
+                if (date != null) {
+                    matchDate = outputDate.format(date);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            flexTemplate = String.format(flexTemplate,
+                    botTemplate.escape(match.getCompetition().getName()),
+                    botTemplate.escape(imgHomeTeam),
+                    botTemplate.escape(imgAwayTeam),
+                    botTemplate.escape(nameHomeTeam),
+                    botTemplate.escape(nameAwayTeam),
+                    botTemplate.escape(matchDate),
+                    botTemplate.escape(venueHomeTeam),
+                    botTemplate.escape(addressHomeTeam));
+
+            ObjectMapper objectMapper = ModelObjectMapper.createNewObjectMapper();
+            FlexContainer flexContainer = objectMapper.readValue(flexTemplate, FlexContainer.class);
+            botService.reply(replyToken, new FlexMessage("Detail Pertandingan", flexContainer));
+
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
