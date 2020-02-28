@@ -118,9 +118,9 @@ public class LineBotController {
             botService.reply(replyToken, messages);
         } else {
             List<Message> messages = new ArrayList<>();
+            messages.add(greetingMessage);
             messages.add(new TextMessage("Pilih kompetisi liga yang ingin kamu cari."));
             messages.add(new TextMessage("Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih."));
-            messages.add(greetingMessage);
             botService.reply(replyToken, messages);
         }
     }

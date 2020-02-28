@@ -12,22 +12,22 @@ public class DataKompetisi {
         leagues.add(new League(
                 2021,
                 "Premier League",
-                "Liga Utama Inggris atau Liga Premier Inggris adalah liga tertinggi dalam sistem liga sepak bola di Inggris. "));
+                "Liga tertinggi dalam sistem liga sepak bola di Inggris."));
 
         leagues.add(new League(
                 2014,
                 "LaLiga Santander",
-                "Laliga Santander adalah liga profesional tertinggi dalam sistem kompetisi liga sepak bola di Spanyol."));
+                "Liga tertinggi dalam sistem liga sepak bola di Spanyol."));
 
         leagues.add(new League(
                 2002,
                 "Bundesliga",
-                "Bundesliga adalah sebuah liga sepak bola profesional di Jerman."));
+                "Liga tertinggi dalam sistem liga sepak bola di Jerman."));
 
         leagues.add(new League(
                 2003,
                 "Eredivisie",
-                "Eredivisie adalah eselon tertinggi dari sepak bola profesional di Belanda."));
+                "Liga tertinggi dalam sistem liga sepak bola di Belanda."));
 
         leagues.add(new League(
                 2015,
