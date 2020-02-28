@@ -92,9 +92,9 @@ public class BotTemplate {
                 e.printStackTrace();
             }
 
-            column = new CarouselColumn(null, null,
-                    matchDate, team, new MessageAction("Detail", "[" + (i + 1) + "]" +
-                    "Jadwal Pertandingan" + league + ":\n" + team), null);
+            column = new CarouselColumn(null,
+                    matchDate, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                    "Jadwal Pertandingan" + league + ":\n" + team)));
 
             carouselColumns.add(column);
         }
