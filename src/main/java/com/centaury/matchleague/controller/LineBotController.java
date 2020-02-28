@@ -219,22 +219,22 @@ public class LineBotController {
         leagueList.add(new League(
                 2021,
                 "Premier League",
-                "Liga Utama Inggris atau Liga Premier Inggris adalah liga tertinggi dalam sistem liga sepak bola di Inggris. Kompetisi ini diikuti oleh 20 klub, liga ini menerapkan sistem promosi dan degradasi dengan English Football League."));
+                "Liga Utama Inggris atau Liga Premier Inggris adalah liga tertinggi dalam sistem liga sepak bola di Inggris. "));
 
         leagueList.add(new League(
                 2014,
                 "LaLiga Santander",
-                "Campeonato Nacional de Liga de Primera División, umumnya dikenal sebagai La Liga, adalah liga profesional tertinggi dalam sistem kompetisi liga sepak bola di Spanyol."));
+                "Laliga Santander adalah liga profesional tertinggi dalam sistem kompetisi liga sepak bola di Spanyol."));
 
         leagueList.add(new League(
                 2002,
                 "Bundesliga",
-                "Bundesliga adalah sebuah liga sepak bola profesional di Jerman. Liga ini adalah liga tingkat atas pada sistem liga sepak bola di Jerman dan merupakan kompetisi utama sepak bola Jerman. Bundesliga yang diikuti oleh 18 klub dan beroperasi dengan sistem promosi dan degradasi."));
+                "Bundesliga adalah sebuah liga sepak bola profesional di Jerman."));
 
         leagueList.add(new League(
                 2003,
                 "Eredivisie",
-                "Eredivisie adalah eselon tertinggi dari sepak bola profesional di Belanda. Liga ini didirikan pada tahun 1956. Divisi teratas terdiri dari 18 klub."));
+                "Eredivisie adalah eselon tertinggi dari sepak bola profesional di Belanda."));
 
         leagueList.add(new League(
                 2015,
