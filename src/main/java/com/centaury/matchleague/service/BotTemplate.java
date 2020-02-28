@@ -81,7 +81,7 @@ public class BotTemplate {
             team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
             league = match.getCompetition().getName();
 
-            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
+            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
             DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
             try {
                 Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
@@ -94,7 +94,7 @@ public class BotTemplate {
 
             column = new CarouselColumn(null,
                     matchDate, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
-                    "Jadwal Pertandingan" + league + ":\n" + team)));
+                    " Jadwal Pertandingan " + league + ":\n\n" + team)));
 
             carouselColumns.add(column);
         }
