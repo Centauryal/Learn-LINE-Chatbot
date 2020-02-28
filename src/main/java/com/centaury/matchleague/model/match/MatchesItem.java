@@ -1,7 +1,7 @@
 package com.centaury.matchleague.model.match;
 
 /**
- * Created by JacksonGenerator on 2/24/20.
+ * Created by JacksonGenerator on 2/28/20.
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,52 +10,32 @@ import java.util.List;
 
 
 public class MatchesItem {
-    @JsonProperty("lastUpdated")
-    private String lastUpdated;
-    @JsonProperty("score")
-    private String score;
-    @JsonProperty("stage")
-    private String stage;
     @JsonProperty("matchday")
     private Integer matchday;
     @JsonProperty("awayTeam")
     private AwayTeam awayTeam;
+    @JsonProperty("utcDate")
+    private String utcDate;
+    @JsonProperty("lastUpdated")
+    private String lastUpdated;
+    @JsonProperty("score")
+    private Score score;
+    @JsonProperty("stage")
+    private String stage;
+    @JsonProperty("odds")
+    private Odds odds;
+    @JsonProperty("season")
+    private Season season;
     @JsonProperty("homeTeam")
     private HomeTeam homeTeam;
     @JsonProperty("id")
     private Integer id;
-    @JsonProperty("utcDate")
-    private String utcDate;
     @JsonProperty("referees")
     private List referees;
     @JsonProperty("status")
     private String status;
     @JsonProperty("group")
     private String group;
-
-    public String getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public String getScore() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score = score;
-    }
-
-    public String getStage() {
-        return stage;
-    }
-
-    public void setStage(String stage) {
-        this.stage = stage;
-    }
 
     public Integer getMatchday() {
         return matchday;
@@ -73,6 +53,54 @@ public class MatchesItem {
         this.awayTeam = awayTeam;
     }
 
+    public String getUtcDate() {
+        return utcDate;
+    }
+
+    public void setUtcDate(String utcDate) {
+        this.utcDate = utcDate;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
+    public String getStage() {
+        return stage;
+    }
+
+    public void setStage(String stage) {
+        this.stage = stage;
+    }
+
+    public Odds getOdds() {
+        return odds;
+    }
+
+    public void setOdds(Odds odds) {
+        this.odds = odds;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
     public HomeTeam getHomeTeam() {
         return homeTeam;
     }
@@ -87,14 +115,6 @@ public class MatchesItem {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUtcDate() {
-        return utcDate;
-    }
-
-    public void setUtcDate(String utcDate) {
-        this.utcDate = utcDate;
     }
 
     public List getReferees() {

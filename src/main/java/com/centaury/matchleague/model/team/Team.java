@@ -1,7 +1,7 @@
 package com.centaury.matchleague.model.team;
 
 /**
- * Created by JacksonGenerator on 2/27/20.
+ * Created by JacksonGenerator on 2/28/20.
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,6 +10,8 @@ import java.util.List;
 
 
 public class Team {
+    @JsonProperty("area")
+    private Area area;
     @JsonProperty("venue")
     private String venue;
     @JsonProperty("website")
@@ -27,7 +29,7 @@ public class Team {
     @JsonProperty("clubColors")
     private String clubColors;
     @JsonProperty("squad")
-    private List squad;
+    private List<SquadItem> squad;
     @JsonProperty("phone")
     private String phone;
     @JsonProperty("name")
@@ -40,6 +42,14 @@ public class Team {
     private String shortName;
     @JsonProperty("email")
     private String email;
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
 
     public String getVenue() {
         return venue;
@@ -105,11 +115,11 @@ public class Team {
         this.clubColors = clubColors;
     }
 
-    public List getSquad() {
+    public List<SquadItem> getSquad() {
         return squad;
     }
 
-    public void setSquad(List squad) {
+    public void setSquad(List<SquadItem> squad) {
         this.squad = squad;
     }
 

@@ -1,13 +1,15 @@
 package com.centaury.matchleague.model.match;
 
 /**
- * Created by JacksonGenerator on 2/24/20.
+ * Created by JacksonGenerator on 2/28/20.
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class Competition {
+    @JsonProperty("area")
+    private Area area;
     @JsonProperty("lastUpdated")
     private String lastUpdated;
     @JsonProperty("code")
@@ -18,6 +20,14 @@ public class Competition {
     private Integer id;
     @JsonProperty("plan")
     private String plan;
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
 
     public String getLastUpdated() {
         return lastUpdated;
