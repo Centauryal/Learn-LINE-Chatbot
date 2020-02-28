@@ -7,6 +7,7 @@ import com.centaury.matchleague.model.match.MatchesItem;
 import com.centaury.matchleague.model.team.Team;
 import com.centaury.matchleague.service.BotService;
 import com.centaury.matchleague.service.BotTemplate;
+import com.centaury.matchleague.utils.DataKompetisi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineSignatureValidator;
 import com.linecorp.bot.model.event.FollowEvent;
@@ -116,10 +117,12 @@ public class LineBotController {
             messages.add(greetingMessage);
             botService.reply(replyToken, messages);
         } else {
-            botService.reply(replyToken, greetingMessage);
+            List<Message> messages = new ArrayList<>();
+            messages.add(new TextMessage("Pilih kompetisi liga yang ingin kamu cari."));
+            messages.add(new TextMessage("Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih."));
+            messages.add(greetingMessage);
+            botService.reply(replyToken, messages);
         }
-
-        messageHelp(replyToken);
     }
 
     private void handleJointOrFollowEvent(String replyToken, Source source) {
@@ -207,44 +210,6 @@ public class LineBotController {
         greetingMessage(replyToken, source, "Hi " + sender.getDisplayName() + ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
     }
 
-    private void messageHelp(String replyToken) {
-        List<String> messages = new ArrayList<>();
-
-        messages.add("Pilih kompetisi liga yang ingin kamu cari.");
-        messages.add("Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih.");
-
-        botService.replyText(replyToken, messages.toArray(new String[messages.size()]));
-    }
-
-    private void getKompetisiLigaData() {
-
-        leagueList.add(new League(
-                2021,
-                "Premier League",
-                "Liga Utama Inggris atau Liga Premier Inggris adalah liga tertinggi dalam sistem liga sepak bola di Inggris. "));
-
-        leagueList.add(new League(
-                2014,
-                "LaLiga Santander",
-                "Laliga Santander adalah liga profesional tertinggi dalam sistem kompetisi liga sepak bola di Spanyol."));
-
-        leagueList.add(new League(
-                2002,
-                "Bundesliga",
-                "Bundesliga adalah sebuah liga sepak bola profesional di Jerman."));
-
-        leagueList.add(new League(
-                2003,
-                "Eredivisie",
-                "Eredivisie adalah eselon tertinggi dari sepak bola profesional di Belanda."));
-
-        leagueList.add(new League(
-                2015,
-                "Ligue 1",
-                "Ligue 1, disebut juga Ligue 1 Conforama untuk keperluan sponsor, adalah divisi teratas dalam liga sepak bola Prancis. Ligue 1 terdiri dari 20 tim sejak musim 2002-03."));
-
-    }
-
     private void getJadwalLigaData(Integer ligaId, String dateFrom, String dateTo) {
         // Act as client with GET method
         String URI = "https://api.football-data.org/v2/competitions/" + ligaId + "/matches?dateFrom="
@@ -311,7 +276,7 @@ public class LineBotController {
     private void showCarouselKompetisiLiga(String replyToken) {
 
         if (leagueList == null || leagueList.size() < 1) {
-            getKompetisiLigaData();
+            leagueList = DataKompetisi.leagueList();
         }
 
         TemplateMessage kompetisiLiga = botTemplate.carouselKompetisiLiga(leagueList);

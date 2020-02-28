@@ -61,8 +61,8 @@ public class BotTemplate {
             name = leagues.get(i).getName();
             desc = leagues.get(i).getDesc();
 
-            column = new CarouselColumn(null, null,
-                    name, desc, new MessageAction("Jadwal", "Kompetisi liga " + name), null);
+            column = new CarouselColumn(null,
+                    name, desc, Collections.singletonList(new MessageAction("Jadwal", "Kompetisi liga " + name)));
 
             carouselColumns.add(column);
         }
