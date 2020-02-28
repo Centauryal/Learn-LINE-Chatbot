@@ -118,6 +118,8 @@ public class LineBotController {
         } else {
             botService.reply(replyToken, greetingMessage);
         }
+
+        messageHelp(replyToken);
     }
 
     private void handleJointOrFollowEvent(String replyToken, Source source) {
@@ -307,7 +309,6 @@ public class LineBotController {
     }
 
     private void showCarouselKompetisiLiga(String replyToken) {
-        messageHelp(replyToken);
 
         if (leagueList == null || leagueList.size() < 1) {
             getKompetisiLigaData();
