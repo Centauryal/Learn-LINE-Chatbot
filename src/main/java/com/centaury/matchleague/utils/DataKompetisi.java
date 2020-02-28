@@ -32,7 +32,7 @@ public class DataKompetisi {
         leagues.add(new League(
                 2015,
                 "Ligue 1",
-                "Ligue 1, disebut juga Ligue 1 Conforama untuk keperluan sponsor, adalah divisi teratas dalam liga sepak bola Prancis. Ligue 1 terdiri dari 20 tim sejak musim 2002-03."));
+                "Liga tertinggi dalam sistem liga sepak bola di Prancis."));
 
         return leagues;
     }
