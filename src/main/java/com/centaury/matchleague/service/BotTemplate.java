@@ -15,6 +15,7 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,15 +54,17 @@ public class BotTemplate {
 
     public TemplateMessage carouselKompetisiLiga(List<League> leagues) {
         int i;
+        URI image;
         String name, desc;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         for (i = 0; i < leagues.size(); i++) {
+            image = URI.create(leagues.get(i).getImage());
             name = leagues.get(i).getName();
             desc = leagues.get(i).getDesc();
 
-            column = new CarouselColumn(null,
+            column = new CarouselColumn(image,
                     name, desc, Collections.singletonList(new MessageAction("Jadwal", "Kompetisi liga " + name)));
 
             carouselColumns.add(column);

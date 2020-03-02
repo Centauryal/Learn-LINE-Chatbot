@@ -369,7 +369,7 @@ public class LineBotController {
             String flexTemplate = IOUtils.toString(classLoader.getResourceAsStream("flex_detailjadwal.json"), encoding);
 
             DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            DateFormat outputDate = new SimpleDateFormat("EEE, dd MMMM yyyy HH:mm", Locale.getDefault());
             String matchDate = "";
             try {
                 Date date = inputDate.parse(matchesItem.getUtcDate());

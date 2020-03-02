@@ -3,11 +3,13 @@ package com.centaury.matchleague.model;
 public class League {
 
     public Integer leagueId;
+    public String image;
     public String name;
     public String desc;
 
-    public League(Integer leagueId, String name, String desc) {
+    public League(Integer leagueId, String image, String name, String desc) {
         this.leagueId = leagueId;
+        this.image = image;
         this.name = name;
         this.desc = desc;
     }
@@ -21,6 +23,14 @@ public class League {
 
     public void setLeagueId(Integer leagueId) {
         this.leagueId = leagueId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getName() {
