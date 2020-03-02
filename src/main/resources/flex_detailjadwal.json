@@ -24,13 +24,10 @@
         "type": "text",
         "text": "%1$s",
         "weight": "bold",
-        "size": "md",
+        "size": "xl",
         "wrap": true,
         "align": "start",
         "contents": []
-      },
-      {
-        "type": "separator"
       },
       {
         "type": "box",
@@ -45,21 +42,26 @@
               {
                 "type": "text",
                 "text": "%2$s",
-                "size": "lg",
+                "size": "md",
                 "align": "center",
                 "gravity": "center",
                 "wrap": true
               },
               {
-                "type": "filler"
+                "type": "text",
+                "text": "vs",
+                "size": "lg",
+                "align": "center",
+                "gravity": "center",
+                "wrap": true
               },
               {
                 "type": "text",
                 "text": "%3$s",
-                "size": "lg",
-                "align": "center",
+                "size": "md",
+                "wrap": true,
                 "gravity": "center",
-                "wrap": true
+                "align": "center"
               }
             ],
             "spacing": "none"

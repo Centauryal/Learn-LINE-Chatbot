@@ -80,9 +80,9 @@ public class LineBotController {
 
         try {
             // validasi line signature. matikan validasi ini jika masih dalam pengembangan
-            /*if (!lineSignatureValidator.validateSignature(eventsPayload.getBytes(), xLineSignature)) {
+            if (!lineSignatureValidator.validateSignature(eventsPayload.getBytes(), xLineSignature)) {
                 throw new RuntimeException("Invalid Signature Validation");
-            }*/
+            }
 
             System.out.println(eventsPayload);
             ObjectMapper objectMapper = ModelObjectMapper.createNewObjectMapper();
@@ -121,6 +121,7 @@ public class LineBotController {
             messages.add(greetingMessage);
             messages.add(new TextMessage("Pilih kompetisi liga yang ingin kamu cari."));
             messages.add(new TextMessage("Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih."));
+            messages.add(new TextMessage("Kamu bisa ketik 'bantu', untuk info lebih lanjut!"));
             botService.reply(replyToken, messages);
         }
     }
@@ -169,6 +170,8 @@ public class LineBotController {
             showCarouselJadwalLiga(replyToken, textMessage);
         } else if (msgText.contains("jadwal pertandingan")) {
             showJadwalDetail(replyToken, textMessage);
+        } else if (msgText.contains("bantu")) {
+            showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new GroupSource(groupId, sender.getUserId()));
         }
@@ -188,6 +191,8 @@ public class LineBotController {
             showCarouselJadwalLiga(replyToken, textMessage);
         } else if (msgText.contains("jadwal pertandingan")) {
             showJadwalDetail(replyToken, textMessage);
+        } else if (msgText.contains("bantu")) {
+            showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new RoomSource(roomId, sender.getUserId()));
         }
@@ -201,13 +206,16 @@ public class LineBotController {
             showCarouselJadwalLiga(replyToken, textMessage);
         } else if (msgText.contains("jadwal pertandingan")) {
             showJadwalDetail(replyToken, textMessage);
+        } else if (msgText.contains("bantu")) {
+            showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
         }
     }
 
     private void handleFallbackMessage(String replyToken, Source source) {
-        greetingMessage(replyToken, source, "Hi " + sender.getDisplayName() + ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
+        greetingMessage(replyToken, source, "Hi " + sender.getDisplayName() +
+                ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
     }
 
     private void getJadwalLigaData(Integer ligaId, String dateFrom, String dateTo) {
@@ -271,6 +279,14 @@ public class LineBotController {
         } catch (InterruptedException | ExecutionException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void showMessageHelp(String replyToken) {
+        String message = "Info bantuan untuk Jadwal Liga yaitu:\n" +
+                "'lihat liga' = Untuk mengetahui kompetisi liga yang tersedia.\n" +
+                "'bantu' = Untuk mengetahui info dari Bot Jadwal Liga.";
+
+        botService.replyText(replyToken, message);
     }
 
     private void showCarouselKompetisiLiga(String replyToken) {

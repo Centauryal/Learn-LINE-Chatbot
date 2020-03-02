@@ -40,9 +40,9 @@ public class BotTemplate {
         String action = "Lihat liga";
 
         if (source instanceof GroupSource) {
-            message = String.format(message, "Group");
+            message = String.format(message, "kawan");
         } else if (source instanceof RoomSource) {
-            message = String.format(message, "Room");
+            message = String.format(message, "semua");
         } else if (source instanceof UserSource) {
             message = String.format(message, sender.getDisplayName());
         } else {
@@ -65,7 +65,7 @@ public class BotTemplate {
             desc = leagues.get(i).getDesc();
 
             column = new CarouselColumn(image,
-                    name, desc, Collections.singletonList(new MessageAction("Jadwal", "Kompetisi liga " + name)));
+                    name, desc, Collections.singletonList(new MessageAction("Jadwal", "Kompetisi Liga " + name)));
 
             carouselColumns.add(column);
         }
@@ -76,13 +76,14 @@ public class BotTemplate {
 
     public TemplateMessage carouselJadwalLiga(Match match) {
         int i;
-        String team, league, matchDate = null;
+        String title, matchday, team, league, matchDate = null;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         for (i = 0; i < match.getMatches().size(); i++) {
             team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
             league = match.getCompetition().getName();
+            matchday = String.valueOf(match.getMatches().get(i).getMatchday());
 
             DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
             DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
@@ -95,8 +96,10 @@ public class BotTemplate {
                 e.printStackTrace();
             }
 
+            title = "Pertandingan ke-" + matchday + ", " + matchDate;
+
             column = new CarouselColumn(null,
-                    matchDate, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                    title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
                     " Jadwal Pertandingan " + league + ":\n\n" + team)));
 
             carouselColumns.add(column);
