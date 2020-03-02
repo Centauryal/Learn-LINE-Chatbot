@@ -80,9 +80,9 @@ public class LineBotController {
 
         try {
             // validasi line signature. matikan validasi ini jika masih dalam pengembangan
-            if (!lineSignatureValidator.validateSignature(eventsPayload.getBytes(), xLineSignature)) {
+            /*if (!lineSignatureValidator.validateSignature(eventsPayload.getBytes(), xLineSignature)) {
                 throw new RuntimeException("Invalid Signature Validation");
-            }
+            }*/
 
             System.out.println(eventsPayload);
             ObjectMapper objectMapper = ModelObjectMapper.createNewObjectMapper();
