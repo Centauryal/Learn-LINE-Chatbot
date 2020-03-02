@@ -96,7 +96,7 @@ public class BotTemplate {
                 e.printStackTrace();
             }
 
-            title = "Pertandingan ke-" + matchday + ", " + matchDate;
+            title = "Matchday " + matchday + ", " + matchDate;
 
             column = new CarouselColumn(null,
                     title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
