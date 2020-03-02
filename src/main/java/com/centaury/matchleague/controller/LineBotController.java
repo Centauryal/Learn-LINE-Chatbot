@@ -340,18 +340,15 @@ public class LineBotController {
             int matchIndex = Integer.parseInt(String.valueOf(textName.charAt(1))) - 1;
             MatchesItem matchesItem = match.getMatches().get(matchIndex);
 
-            String imgHomeTeam = "";
             String nameHomeTeam = "";
             String venueHomeTeam = "";
             String addressHomeTeam = "";
-            String imgAwayTeam = "";
             String nameAwayTeam = "";
 
             int homeTeamId = matchesItem.getHomeTeam().getId();
             if (homeTeamId != 0) {
                 getTeamDetailData(homeTeamId);
                 if (team != null) {
-                    imgHomeTeam = team.getCrestUrl();
                     nameHomeTeam = team.getName();
                     venueHomeTeam = team.getVenue();
                     addressHomeTeam = team.getAddress();
@@ -363,7 +360,6 @@ public class LineBotController {
                 team = new Team();
                 getTeamDetailData(awayTeamId);
                 if (team != null) {
-                    imgAwayTeam = team.getCrestUrl();
                     nameAwayTeam = team.getName();
                 }
             }
@@ -386,8 +382,6 @@ public class LineBotController {
 
             flexTemplate = String.format(flexTemplate,
                     botTemplate.escape(match.getCompetition().getName()),
-                    botTemplate.escape(imgHomeTeam),
-                    botTemplate.escape(imgAwayTeam),
                     botTemplate.escape(nameHomeTeam),
                     botTemplate.escape(nameAwayTeam),
                     botTemplate.escape(matchDate),

@@ -37,33 +37,11 @@
           {
             "type": "box",
             "layout": "horizontal",
-            "spacing": "none",
-            "contents": [
-              {
-                "type": "image",
-                "url": "%2$s",
-                "align": "center",
-                "gravity": "center"
-              },
-              {
-                "type": "filler"
-              },
-              {
-                "type": "image",
-                "url": "%3$s",
-                "align": "center",
-                "gravity": "center"
-              }
-            ]
-          },
-          {
-            "type": "box",
-            "layout": "horizontal",
             "spacing": "sm",
             "contents": [
               {
                 "type": "text",
-                "text": "%4$s",
+                "text": "%2$s",
                 "size": "md",
                 "align": "center",
                 "gravity": "center",
@@ -74,7 +52,7 @@
               },
               {
                 "type": "text",
-                "text": "%5$s",
+                "text": "%3$s",
                 "size": "md",
                 "align": "center",
                 "gravity": "center",
@@ -90,7 +68,7 @@
         "contents": [
           {
             "type": "text",
-            "text": "%6$s",
+            "text": "%4$s",
             "size": "sm",
             "align": "center",
             "gravity": "center",
@@ -98,7 +76,7 @@
           },
           {
             "type": "text",
-            "text": "%7$s",
+            "text": "%5$s",
             "size": "md",
             "gravity": "center",
             "align": "center",
@@ -107,7 +85,7 @@
           },
           {
             "type": "text",
-            "text": "%8$s",
+            "text": "%6$s",
             "size": "md",
             "align": "center",
             "gravity": "center",
