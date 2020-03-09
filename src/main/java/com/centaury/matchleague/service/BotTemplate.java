@@ -76,33 +76,40 @@ public class BotTemplate {
 
     public TemplateMessage carouselJadwalLiga(Match match) {
         int i;
-        String title, matchday, team, league, matchDate = null;
+        String title, matchday, team, league, message, matchDate = null;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
-        for (i = 0; i < match.getMatches().size(); i++) {
-            team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
-            league = match.getCompetition().getName();
-            matchday = String.valueOf(match.getMatches().get(i).getMatchday());
+        if (match.getMatches() == null || match.getMatches().size() < 1) {
+            message = "Maaf, tidak ada jadwal pertandingan untuk saat ini.";
 
-            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-            try {
-                Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
-                if (date != null) {
-                    matchDate = outputDate.format(date);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            title = "Matchday " + matchday + ", " + matchDate;
-
-            column = new CarouselColumn(null,
-                    title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
-                    " Jadwal Pertandingan " + league + ":\n\n" + team)));
-
+            column = new CarouselColumn(null, null, message, null);
             carouselColumns.add(column);
+        } else {
+            for (i = 0; i < match.getMatches().size(); i++) {
+                team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
+                league = match.getCompetition().getName();
+                matchday = String.valueOf(match.getMatches().get(i).getMatchday());
+
+                DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+                DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+                try {
+                    Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
+                    if (date != null) {
+                        matchDate = outputDate.format(date);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                title = "Matchday " + matchday + ", " + matchDate;
+
+                column = new CarouselColumn(null,
+                        title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                        " Jadwal Pertandingan " + league + ":\n\n" + team)));
+
+                carouselColumns.add(column);
+            }
         }
 
         CarouselTemplate carouselTemplate = new CarouselTemplate(carouselColumns);
