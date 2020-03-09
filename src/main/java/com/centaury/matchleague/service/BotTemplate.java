@@ -92,7 +92,7 @@ public class BotTemplate {
                 matchday = String.valueOf(match.getMatches().get(i).getMatchday());
 
                 DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-                DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+                DateFormat outputDate = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
                 try {
                     Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
                     if (date != null) {
@@ -102,7 +102,7 @@ public class BotTemplate {
                     e.printStackTrace();
                 }
 
-                title = "Matchday " + matchday + ", " + matchDate;
+                title = "Day " + matchday + ", " + matchDate;
 
                 column = new CarouselColumn(null,
                         title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
