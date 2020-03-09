@@ -310,15 +310,15 @@ public class LineBotController {
         weekDate = useDate.format(nextWeek);
 
         if (nameLeague.contains("premier league")) {
-            getJadwalLigaData(2021, "2020-03-12", "2020-03-13");
+            getJadwalLigaData(2021, nowDate, weekDate);
         } else if (nameLeague.contains("laliga santander")) {
-            getJadwalLigaData(2014, "2020-03-12", "2020-03-13");
+            getJadwalLigaData(2014, nowDate, weekDate);
         } else if (nameLeague.contains("bundesliga")) {
-            getJadwalLigaData(2002, "2020-03-12", "2020-03-13");
+            getJadwalLigaData(2002, nowDate, weekDate);
         } else if (nameLeague.contains("eredivisie")) {
-            getJadwalLigaData(2003, "2020-03-12", "2020-03-13");
+            getJadwalLigaData(2003, nowDate, weekDate);
         } else if (nameLeague.contains("ligue 1")) {
-            getJadwalLigaData(2015, "2020-03-12", "2020-03-13");
+            getJadwalLigaData(2015, nowDate, weekDate);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
         }

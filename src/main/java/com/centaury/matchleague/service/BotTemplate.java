@@ -76,15 +76,15 @@ public class BotTemplate {
 
     public TemplateMessage carouselJadwalLiga(Match match) {
         int i;
-        String title, matchday, team, league, message, matchDate = null;
+        String title, matchday, team, league, message, action, matchDate = null;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         if (match.getMatches() == null || match.getMatches().size() < 1) {
-            message = "Maaf, tidak ada jadwal pertandingan untuk saat ini.";
+            message = "Maaf, tidak ada jadwal pertandingan untuk seminggu kedepan.";
+            action = "Lihat liga";
 
-            column = new CarouselColumn(null, null, message, null);
-            carouselColumns.add(column);
+            return createBubble(message, action, action);
         } else {
             for (i = 0; i < match.getMatches().size(); i++) {
                 team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
@@ -110,10 +110,10 @@ public class BotTemplate {
 
                 carouselColumns.add(column);
             }
-        }
 
-        CarouselTemplate carouselTemplate = new CarouselTemplate(carouselColumns);
-        return new TemplateMessage("Pertandingan", carouselTemplate);
+            CarouselTemplate carouselTemplate = new CarouselTemplate(carouselColumns);
+            return new TemplateMessage("Pertandingan", carouselTemplate);
+        }
     }
 
     public String escape(String text) {
