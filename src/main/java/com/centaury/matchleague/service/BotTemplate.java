@@ -2,6 +2,7 @@ package com.centaury.matchleague.service;
 
 import com.centaury.matchleague.model.League;
 import com.centaury.matchleague.model.match.Match;
+import com.centaury.matchleague.model.match.MatchesItem;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
@@ -92,7 +93,7 @@ public class BotTemplate {
                 matchday = String.valueOf(match.getMatches().get(i).getMatchday());
 
                 DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-                DateFormat outputDate = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
                 try {
                     Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
                     if (date != null) {
@@ -102,7 +103,7 @@ public class BotTemplate {
                     e.printStackTrace();
                 }
 
-                title = "Day " + matchday + ", " + matchDate;
+                title = "Matchday " + matchday + ", " + matchDate;
 
                 column = new CarouselColumn(null,
                         title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
@@ -118,5 +119,14 @@ public class BotTemplate {
 
     public String escape(String text) {
         return StringEscapeUtils.escapeJson(text.trim());
+    }
+
+    public static List[] splitJadwal(List<MatchesItem> matches) {
+        int size = matches.size();
+
+        List<MatchesItem> jadwalPertama = new ArrayList<>(matches.subList(0, (size) / 2));
+        List<MatchesItem> jadwalKedua = new ArrayList<>(matches.subList((size) / 2, size));
+
+        return new List[]{jadwalPertama, jadwalKedua};
     }
 }

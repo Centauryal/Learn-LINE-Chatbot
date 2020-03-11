@@ -10,6 +10,7 @@ import com.centaury.matchleague.service.BotTemplate;
 import com.centaury.matchleague.utils.DataKompetisi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineSignatureValidator;
+import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.JoinEvent;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -25,6 +26,8 @@ import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.flex.container.FlexContainer;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.objectmapper.ModelObjectMapper;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import org.apache.commons.io.IOUtils;
@@ -218,7 +221,22 @@ public class LineBotController {
                 ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
     }
 
-    private void getJadwalLigaData(Integer ligaId, String dateFrom, String dateTo) {
+    private void getJadwalLigaData(String namaLeague, String dateFrom, String dateTo) {
+        String league = namaLeague.toLowerCase();
+        int ligaId = 0;
+
+        if (league.contains("premier league")) {
+            ligaId = 2021;
+        } else if (league.contains("laliga santander")) {
+            ligaId = 2014;
+        } else if (league.contains("bundesliga")) {
+            ligaId = 2002;
+        } else if (league.contains("eredivisie")) {
+            ligaId = 2003;
+        } else if (league.contains("ligue 1")) {
+            ligaId = 2015;
+        }
+
         // Act as client with GET method
         String URI = "https://api.football-data.org/v2/competitions/" + ligaId + "/matches?dateFrom="
                 + dateFrom + "&dateTo=" + dateTo + "&status=SCHEDULED";
@@ -300,8 +318,6 @@ public class LineBotController {
     }
 
     private void showCarouselJadwalLiga(String replyToken, String textName) {
-        String nameLeague = textName.toLowerCase();
-
         Date currentDate = calendar.getTime();
         nowDate = useDate.format(currentDate);
 
@@ -309,26 +325,98 @@ public class LineBotController {
         Date nextWeek = calendar.getTime();
         weekDate = useDate.format(nextWeek);
 
-        if (nameLeague.contains("premier league")) {
-            getJadwalLigaData(2021, nowDate, weekDate);
-        } else if (nameLeague.contains("laliga santander")) {
-            getJadwalLigaData(2014, nowDate, weekDate);
-        } else if (nameLeague.contains("bundesliga")) {
-            getJadwalLigaData(2002, nowDate, weekDate);
-        } else if (nameLeague.contains("eredivisie")) {
-            getJadwalLigaData(2003, nowDate, weekDate);
-        } else if (nameLeague.contains("ligue 1")) {
-            getJadwalLigaData(2015, nowDate, weekDate);
+        if (textName.toLowerCase().contains("premier league") ||
+                textName.toLowerCase().contains("laliga santander") ||
+                textName.toLowerCase().contains("bundesliga") ||
+                textName.toLowerCase().contains("eredivisie") ||
+                textName.toLowerCase().contains("ligue 1")) {
+            getJadwalLigaData(textName, nowDate, weekDate);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
         }
 
-        TemplateMessage jadwalLiga = botTemplate.carouselJadwalLiga(match);
-        botService.reply(replyToken, jadwalLiga);
+        if (match.getMatches().size() > 10) {
+            showMoreItemJadwal(replyToken, match);
+        } else {
+            TemplateMessage jadwalLiga = botTemplate.carouselJadwalLiga(match);
+            calendar.add(Calendar.DATE, -6);
+            botService.reply(replyToken, jadwalLiga);
+        }
+    }
+
+    private void showMoreItemJadwal(String replyToken, Match match) {
+        int i, j;
+        String title, matchday, team, league, matchDate = null;
+        List[] lists = BotTemplate.splitJadwal(match.getMatches());
+        CarouselColumn columnPertama;
+        CarouselColumn columnKedua;
+        List<CarouselColumn> columnsListPertama = new ArrayList<>();
+        List<CarouselColumn> columnsListKedua = new ArrayList<>();
+        List<Message> messageList = new ArrayList<>();
+
+        List<MatchesItem> itemJadwalPertama = lists[0];
+        for (i = 0; i < itemJadwalPertama.size(); i++) {
+            team = itemJadwalPertama.get(i).getHomeTeam().getName() + "\nvs\n" + itemJadwalPertama.get(i).getAwayTeam().getName();
+            league = match.getCompetition().getName();
+            matchday = String.valueOf(itemJadwalPertama.get(i).getMatchday());
+
+            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            try {
+                Date date = inputDate.parse(itemJadwalPertama.get(i).getUtcDate());
+                if (date != null) {
+                    matchDate = outputDate.format(date);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            title = "Matchday " + matchday + ", " + matchDate;
+
+            columnPertama = new CarouselColumn(null,
+                    title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                    " Jadwal Pertandingan " + league + ":\n\n" + team)));
+
+            columnsListPertama.add(columnPertama);
+        }
+        CarouselTemplate templatePertama = new CarouselTemplate(columnsListPertama);
+
+        List<MatchesItem> itemJadwalKedua = lists[1];
+        for (j = 0; j < itemJadwalKedua.size(); j++) {
+            team = itemJadwalKedua.get(j).getHomeTeam().getName() + "\nvs\n" + itemJadwalKedua.get(j).getAwayTeam().getName();
+            league = match.getCompetition().getName();
+            matchday = String.valueOf(itemJadwalKedua.get(j).getMatchday());
+
+            DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            try {
+                Date date = inputDate.parse(itemJadwalKedua.get(j).getUtcDate());
+                if (date != null) {
+                    matchDate = outputDate.format(date);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            title = "Matchday " + matchday + ", " + matchDate;
+
+            columnKedua = new CarouselColumn(null,
+                    title, team, Collections.singletonList(new MessageAction("Detail",
+                    "[" + (itemJadwalPertama.size() + j + 1) + "]" +
+                            " Jadwal Pertandingan " + league + ":\n\n" + team)));
+
+            columnsListKedua.add(columnKedua);
+        }
+        CarouselTemplate templateKedua = new CarouselTemplate(columnsListKedua);
+
+        messageList.add(new TemplateMessage("Pertandingan", templatePertama));
+        messageList.add(new TemplateMessage("Pertandingan", templateKedua));
+
+        calendar.add(Calendar.DATE, -6);
+        botService.reply(replyToken, messageList);
     }
 
     private void showJadwalDetail(String replyToken, String textName) {
-        String league = textName.toLowerCase();
         Date currentDate = calendar.getTime();
         nowDate = useDate.format(currentDate);
 
@@ -338,22 +426,27 @@ public class LineBotController {
 
         try {
             if (match == null) {
-                if (league.contains("premier league")) {
-                    getJadwalLigaData(2021, nowDate, weekDate);
-                } else if (league.contains("primera division")) {
-                    getJadwalLigaData(2014, nowDate, weekDate);
-                } else if (league.contains("bundesliga")) {
-                    getJadwalLigaData(2002, nowDate, weekDate);
-                } else if (league.contains("eredivisie")) {
-                    getJadwalLigaData(2003, nowDate, weekDate);
-                } else if (league.contains("ligue 1")) {
-                    getJadwalLigaData(2015, nowDate, weekDate);
+                if (textName.toLowerCase().contains("premier league") ||
+                        textName.toLowerCase().contains("laliga santander") ||
+                        textName.toLowerCase().contains("bundesliga") ||
+                        textName.toLowerCase().contains("eredivisie") ||
+                        textName.toLowerCase().contains("ligue 1")) {
+                    getJadwalLigaData(textName, nowDate, weekDate);
                 } else {
                     handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
                 }
             }
 
-            int matchIndex = Integer.parseInt(String.valueOf(textName.charAt(1))) - 1;
+            int matchIndex;
+            String s = String.valueOf(textName.charAt(2));
+
+            if (s.equals("]")) {
+                matchIndex = Integer.parseInt(String.valueOf(textName.charAt(1))) - 1;
+            } else {
+                int dataTen = Integer.parseInt(String.valueOf(textName.charAt(1)) + textName.charAt(2));
+                matchIndex = dataTen - 1;
+            }
+
             MatchesItem matchesItem = match.getMatches().get(matchIndex);
 
             String nameHomeTeam = "";
@@ -406,8 +499,8 @@ public class LineBotController {
 
             ObjectMapper objectMapper = ModelObjectMapper.createNewObjectMapper();
             FlexContainer flexContainer = objectMapper.readValue(flexTemplate, FlexContainer.class);
+            calendar.add(Calendar.DATE, -6);
             botService.reply(replyToken, new FlexMessage("Detail Pertandingan", flexContainer));
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
