@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LineJadwalLigaModel {
+public class LineLeagueScheduleModel {
 
     private final List<Event> events;
 
     @JsonCreator
-    public LineJadwalLigaModel(@JsonProperty("events") List<Event> events) {
+    public LineLeagueScheduleModel(@JsonProperty("events") List<Event> events) {
         this.events = events != null ? events : Collections.emptyList();
     }
 

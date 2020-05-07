@@ -25,6 +25,15 @@ import java.util.*;
 @Service
 public class BotTemplate {
 
+    public static List[] splitSchedule(List<MatchesItem> matches) {
+        int size = matches.size();
+
+        List<MatchesItem> firstSchedule = new ArrayList<>(matches.subList(0, (size) / 2));
+        List<MatchesItem> secondSchedule = new ArrayList<>(matches.subList((size) / 2, size));
+
+        return new List[]{firstSchedule, secondSchedule};
+    }
+
     public TemplateMessage createBubble(String message, String actionTitle, String actionText) {
         ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                 null,
@@ -53,7 +62,7 @@ public class BotTemplate {
         return createBubble(message, action, action);
     }
 
-    public TemplateMessage carouselKompetisiLiga(List<League> leagues) {
+    public TemplateMessage carouselLeagueCompetition(List<League> leagues) {
         int i;
         URI image;
         String name, desc;
@@ -75,7 +84,7 @@ public class BotTemplate {
         return new TemplateMessage("Kompetisi Liga", carouselTemplate);
     }
 
-    public TemplateMessage carouselJadwalLiga(Match match) {
+    public TemplateMessage carouselLeagueSchedule(Match match) {
         int i;
         String title, matchday, team, league, message, action, matchDate = null;
         CarouselColumn column;
@@ -119,14 +128,5 @@ public class BotTemplate {
 
     public String escape(String text) {
         return StringEscapeUtils.escapeJson(text.trim());
-    }
-
-    public static List[] splitJadwal(List<MatchesItem> matches) {
-        int size = matches.size();
-
-        List<MatchesItem> jadwalPertama = new ArrayList<>(matches.subList(0, (size) / 2));
-        List<MatchesItem> jadwalKedua = new ArrayList<>(matches.subList((size) / 2, size));
-
-        return new List[]{jadwalPertama, jadwalKedua};
     }
 }
