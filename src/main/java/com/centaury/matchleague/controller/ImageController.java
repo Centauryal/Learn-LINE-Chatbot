@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 public class ImageController {
 
-    @RequestMapping(value = "/image/premier-league", method = RequestMethod.GET,
+    @RequestMapping(value = "/image/premier_league", method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getImagePremierLeague() throws IOException {
         ClassPathResource imgFile = new ClassPathResource("image/premier_league.png");
@@ -23,7 +23,7 @@ public class ImageController {
                 .body(new InputStreamResource(imgFile.getInputStream()));
     }
 
-    @RequestMapping(value = "/image/serie-a", method = RequestMethod.GET,
+    @RequestMapping(value = "/image/serie_a", method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getImageSerieA() throws IOException {
         ClassPathResource imgFile = new ClassPathResource("image/serie_a.png");
@@ -33,7 +33,7 @@ public class ImageController {
                 .body(new InputStreamResource(imgFile.getInputStream()));
     }
 
-    @RequestMapping(value = "/image/laliga-santander", method = RequestMethod.GET,
+    @RequestMapping(value = "/image/laliga_santander", method = RequestMethod.GET,
             produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<InputStreamResource> getImageLaLiga() throws IOException {
         ClassPathResource imgFile = new ClassPathResource("image/la_liga.png");
