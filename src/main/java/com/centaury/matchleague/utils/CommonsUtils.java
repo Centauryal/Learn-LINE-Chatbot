@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class CommonsUtlis {
+public class CommonsUtils {
 
     public static DateFormat apiDate() {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

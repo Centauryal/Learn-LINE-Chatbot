@@ -3,6 +3,8 @@ package com.centaury.matchleague.service;
 import com.centaury.matchleague.model.League;
 import com.centaury.matchleague.model.match.Match;
 import com.centaury.matchleague.model.match.MatchesItem;
+import com.centaury.matchleague.utils.CommonsUtils;
+import com.centaury.matchleague.utils.StringMessage;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
@@ -47,7 +49,7 @@ public class BotTemplate {
 
     public TemplateMessage greetingMessage(Source source, UserProfileResponse sender) {
         String message = "Hi %s! Jangan sampai terlewatkan nonton tim sepak bola favoritmu, yuk cek di Jadwal Liga!";
-        String action = "Lihat liga";
+        String action = StringMessage.showLeague();
 
         if (source instanceof GroupSource) {
             message = String.format(message, "kawan");
@@ -91,8 +93,8 @@ public class BotTemplate {
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
         if (match.getMatches() == null || match.getMatches().size() < 1) {
-            message = "Maaf, tidak ada jadwal pertandingan untuk seminggu kedepan.";
-            action = "Lihat liga";
+            message = StringMessage.noCompetition();
+            action = StringMessage.showLeague();
 
             return createBubble(message, action, action);
         } else {
@@ -101,18 +103,16 @@ public class BotTemplate {
                 league = match.getCompetition().getName();
                 matchday = String.valueOf(match.getMatches().get(i).getMatchday());
 
-                DateFormat inputDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-                DateFormat outputDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
                 try {
-                    Date date = inputDate.parse(match.getMatches().get(i).getUtcDate());
+                    Date date = CommonsUtils.inputDate().parse(match.getMatches().get(i).getUtcDate());
                     if (date != null) {
-                        matchDate = outputDate.format(date);
+                        matchDate = CommonsUtils.outputDate().format(date);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                title = "Matchday " + matchday + ", " + matchDate;
+                title = StringMessage.titleMatchDay(matchday, matchDate);
 
                 column = new CarouselColumn(null,
                         title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +

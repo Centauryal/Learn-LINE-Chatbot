@@ -11,13 +11,19 @@ public class DataKompetisi {
 
         leagues.add(new League(
                 2021,
-                "https://jadwalliga.herokuapp.com/image/premier_league",
+                "https://jadwalliga.herokuapp.com/image/premier-league",
                 "Premier League",
                 "Liga tertinggi dalam sistem liga sepak bola di Inggris."));
 
         leagues.add(new League(
+                2019,
+                "https://jadwalliga.herokuapp.com/image/serie-a",
+                "Serie A",
+                "Liga tertinggi dalam sistem liga sepak bola di Italia."));
+
+        leagues.add(new League(
                 2014,
-                "https://jadwalliga.herokuapp.com/image/laliga_santander",
+                "https://jadwalliga.herokuapp.com/image/laliga-santander",
                 "LaLiga Santander",
                 "Liga tertinggi dalam sistem liga sepak bola di Spanyol."));
 

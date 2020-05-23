@@ -7,8 +7,9 @@ import com.centaury.matchleague.model.match.MatchesItem;
 import com.centaury.matchleague.model.team.Team;
 import com.centaury.matchleague.service.BotService;
 import com.centaury.matchleague.service.BotTemplate;
-import com.centaury.matchleague.utils.CommonsUtlis;
+import com.centaury.matchleague.utils.CommonsUtils;
 import com.centaury.matchleague.utils.DataKompetisi;
+import com.centaury.matchleague.utils.StringMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineSignatureValidator;
 import com.linecorp.bot.model.action.MessageAction;
@@ -50,6 +51,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static com.centaury.matchleague.utils.StringMessage.*;
 
 @RestController
 public class LineBotController {
@@ -114,9 +117,8 @@ public class LineBotController {
             messages.add(greetingMessage);
         } else {
             messages.add(greetingMessage);
-            messages.add(new TextMessage("Pilih kompetisi liga yang ingin kamu cari."));
-            messages.add(new TextMessage("Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih."));
-            messages.add(new TextMessage("Kamu bisa ketik 'bantu', untuk info lebih lanjut!"));
+            messages.add(new TextMessage(greetingInfo()));
+            messages.add(new TextMessage(greetingHelp()));
         }
         botService.reply(replyToken, messages);
     }
@@ -153,19 +155,19 @@ public class LineBotController {
 
     private void handleGroupChats(String replyToken, String textMessage, String groupId) {
         String msgText = textMessage.toLowerCase();
-        if (msgText.contains("liga selesai")) {
+        if (msgText.contains(finishLeague())) {
             if (sender == null) {
-                botService.replyText(replyToken, "Hi, tambahkan dulu bot Jadwal Liga sebagai teman!");
+                botService.replyText(replyToken, addBot());
             } else {
                 botService.leaveGroup(groupId);
             }
-        } else if (msgText.contains("lihat liga")) {
+        } else if (msgText.contains(showLeague())) {
             showCarouselLeagueCompetition(replyToken);
-        } else if (msgText.contains("kompetisi liga")) {
+        } else if (msgText.contains(competitionLeague())) {
             showCarouselLeagueSchedule(replyToken, textMessage);
-        } else if (msgText.contains("jadwal pertandingan")) {
+        } else if (msgText.contains(matchSchedule())) {
             showScheduleDetail(replyToken, textMessage);
-        } else if (msgText.contains("bantu")) {
+        } else if (msgText.contains(txtHelp())) {
             showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new GroupSource(groupId, sender.getUserId()));
@@ -174,19 +176,19 @@ public class LineBotController {
 
     private void handleRoomChats(String replyToken, String textMessage, String roomId) {
         String msgText = textMessage.toLowerCase();
-        if (msgText.contains("liga selesai")) {
+        if (msgText.contains(finishLeague())) {
             if (sender == null) {
-                botService.replyText(replyToken, "Hi, tambahkan dulu bot Jadwal Liga sebagai teman!");
+                botService.replyText(replyToken, addBot());
             } else {
                 botService.leaveRoom(roomId);
             }
-        } else if (msgText.contains("lihat liga")) {
+        } else if (msgText.contains(showLeague())) {
             showCarouselLeagueCompetition(replyToken);
-        } else if (msgText.contains("kompetisi liga")) {
+        } else if (msgText.contains(competitionLeague())) {
             showCarouselLeagueSchedule(replyToken, textMessage);
-        } else if (msgText.contains("jadwal pertandingan")) {
+        } else if (msgText.contains(matchSchedule())) {
             showScheduleDetail(replyToken, textMessage);
-        } else if (msgText.contains("bantu")) {
+        } else if (msgText.contains(txtHelp())) {
             showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new RoomSource(roomId, sender.getUserId()));
@@ -195,13 +197,13 @@ public class LineBotController {
 
     private void handleOneOnOneChats(String replyToken, String textMessage) {
         String msgText = textMessage.toLowerCase();
-        if (msgText.contains("lihat liga")) {
+        if (msgText.contains(showLeague())) {
             showCarouselLeagueCompetition(replyToken);
-        } else if (msgText.contains("kompetisi liga")) {
+        } else if (msgText.contains(competitionLeague())) {
             showCarouselLeagueSchedule(replyToken, textMessage);
-        } else if (msgText.contains("jadwal pertandingan")) {
+        } else if (msgText.contains(matchSchedule())) {
             showScheduleDetail(replyToken, textMessage);
-        } else if (msgText.contains("bantu")) {
+        } else if (msgText.contains(txtHelp())) {
             showMessageHelp(replyToken);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
@@ -209,23 +211,24 @@ public class LineBotController {
     }
 
     private void handleFallbackMessage(String replyToken, Source source) {
-        greetingMessage(replyToken, source, "Hi " + sender.getDisplayName() +
-                ", maaf kompetisi liga tidak ada. Silahkan cek kompetisi liga yang tersedia");
+        greetingMessage(replyToken, source, noCompetition(sender.getDisplayName()));
     }
 
     private void getLeagueScheduleData(String nameLeague, String dateFrom, String dateTo) {
         String league = nameLeague.toLowerCase();
         int idLeague = 0;
 
-        if (league.contains("premier league")) {
+        if (league.contains(premierLeague())) {
             idLeague = 2021;
-        } else if (league.contains("laliga santander")) {
+        } else if (league.contains(serieALeague())) {
+            idLeague = 2019;
+        } else if (league.contains(laLigaLeague())) {
             idLeague = 2014;
-        } else if (league.contains("bundesliga")) {
+        } else if (league.contains(bundesligaLeague())) {
             idLeague = 2002;
-        } else if (league.contains("eredivisie")) {
+        } else if (league.contains(eredivisieLeague())) {
             idLeague = 2003;
-        } else if (league.contains("ligue 1")) {
+        } else if (league.contains(ligue1League())) {
             idLeague = 2015;
         }
 
@@ -285,11 +288,7 @@ public class LineBotController {
     }
 
     private void showMessageHelp(String replyToken) {
-        String message = "Info bantuan untuk Jadwal Liga yaitu:\n" +
-                "'lihat liga' = Untuk mengetahui kompetisi liga yang tersedia.\n" +
-                "'bantu' = Untuk mengetahui info dari Bot Jadwal Liga.";
-
-        botService.replyText(replyToken, message);
+        botService.replyText(replyToken, messageHelp());
     }
 
     private void showCarouselLeagueCompetition(String replyToken) {
@@ -304,17 +303,18 @@ public class LineBotController {
 
     private void showCarouselLeagueSchedule(String replyToken, String textName) {
         Date currentDate = calendar.getTime();
-        nowDate = CommonsUtlis.apiDate().format(currentDate);
+        nowDate = CommonsUtils.apiDate().format(currentDate);
 
         calendar.add(Calendar.DATE, 6);
         Date nextWeek = calendar.getTime();
-        weekDate = CommonsUtlis.apiDate().format(nextWeek);
+        weekDate = CommonsUtils.apiDate().format(nextWeek);
 
-        if (textName.toLowerCase().contains("premier league") ||
-                textName.toLowerCase().contains("laliga santander") ||
-                textName.toLowerCase().contains("bundesliga") ||
-                textName.toLowerCase().contains("eredivisie") ||
-                textName.toLowerCase().contains("ligue 1")) {
+        if (textName.toLowerCase().contains(premierLeague()) ||
+                textName.toLowerCase().contains(serieALeague()) ||
+                textName.toLowerCase().contains(laLigaLeague()) ||
+                textName.toLowerCase().contains(bundesligaLeague()) ||
+                textName.toLowerCase().contains(eredivisieLeague()) ||
+                textName.toLowerCase().contains(ligue1League())) {
             getLeagueScheduleData(textName, nowDate, weekDate);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
@@ -341,20 +341,22 @@ public class LineBotController {
 
         List<MatchesItem> itemFirstSchedule = lists[0];
         for (i = 0; i < itemFirstSchedule.size(); i++) {
-            team = itemFirstSchedule.get(i).getHomeTeam().getName() + "\nvs\n" + itemFirstSchedule.get(i).getAwayTeam().getName();
+            team = itemFirstSchedule.get(i).getHomeTeam().getName() +
+                    "\nvs\n" +
+                    itemFirstSchedule.get(i).getAwayTeam().getName();
             league = match.getCompetition().getName();
             matchday = String.valueOf(itemFirstSchedule.get(i).getMatchday());
 
             try {
-                Date date = CommonsUtlis.inputDate().parse(itemFirstSchedule.get(i).getUtcDate());
+                Date date = CommonsUtils.inputDate().parse(itemFirstSchedule.get(i).getUtcDate());
                 if (date != null) {
-                    matchDate = CommonsUtlis.outputDate().format(date);
+                    matchDate = CommonsUtils.outputDate().format(date);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            title = "Matchday " + matchday + ", " + matchDate;
+            title = titleMatchDay(matchday, matchDate);
 
             columnFirst = new CarouselColumn(null,
                     title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
@@ -371,15 +373,15 @@ public class LineBotController {
             matchday = String.valueOf(itemSecondSchedule.get(j).getMatchday());
 
             try {
-                Date date = CommonsUtlis.inputDate().parse(itemSecondSchedule.get(j).getUtcDate());
+                Date date = CommonsUtils.inputDate().parse(itemSecondSchedule.get(j).getUtcDate());
                 if (date != null) {
-                    matchDate = CommonsUtlis.outputDate().format(date);
+                    matchDate = CommonsUtils.outputDate().format(date);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            title = "Matchday " + matchday + ", " + matchDate;
+            title = titleMatchDay(matchday, matchDate);
 
             columnSecond = new CarouselColumn(null,
                     title, team, Collections.singletonList(new MessageAction("Detail",
@@ -399,19 +401,20 @@ public class LineBotController {
 
     private void showScheduleDetail(String replyToken, String textName) {
         Date currentDate = calendar.getTime();
-        nowDate = CommonsUtlis.apiDate().format(currentDate);
+        nowDate = CommonsUtils.apiDate().format(currentDate);
 
         calendar.add(Calendar.DATE, 6);
         Date nextWeek = calendar.getTime();
-        weekDate = CommonsUtlis.apiDate().format(nextWeek);
+        weekDate = CommonsUtils.apiDate().format(nextWeek);
 
         try {
             if (match == null) {
-                if (textName.toLowerCase().contains("premier league") ||
-                        textName.toLowerCase().contains("laliga santander") ||
-                        textName.toLowerCase().contains("bundesliga") ||
-                        textName.toLowerCase().contains("eredivisie") ||
-                        textName.toLowerCase().contains("ligue 1")) {
+                if (textName.toLowerCase().contains(premierLeague()) ||
+                        textName.toLowerCase().contains(serieALeague()) ||
+                        textName.toLowerCase().contains(laLigaLeague()) ||
+                        textName.toLowerCase().contains(bundesligaLeague()) ||
+                        textName.toLowerCase().contains(eredivisieLeague()) ||
+                        textName.toLowerCase().contains(ligue1League())) {
                     getLeagueScheduleData(textName, nowDate, weekDate);
                 } else {
                     handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
@@ -460,9 +463,9 @@ public class LineBotController {
 
             String matchDate = "";
             try {
-                Date date = CommonsUtlis.inputDate().parse(matchesItem.getUtcDate());
+                Date date = CommonsUtils.inputDate().parse(matchesItem.getUtcDate());
                 if (date != null) {
-                    matchDate = CommonsUtlis.outputDetailDate().format(date);
+                    matchDate = CommonsUtils.outputDetailDate().format(date);
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
