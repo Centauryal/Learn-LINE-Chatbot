@@ -3,6 +3,7 @@ package com.centaury.matchleague.service;
 import com.centaury.matchleague.model.League;
 import com.centaury.matchleague.model.match.Match;
 import com.centaury.matchleague.model.match.MatchesItem;
+import com.centaury.matchleague.model.match.Score;
 import com.centaury.matchleague.utils.CommonsUtils;
 import com.centaury.matchleague.utils.StringMessage;
 import com.linecorp.bot.model.action.MessageAction;
@@ -10,6 +11,7 @@ import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
 import com.linecorp.bot.model.event.source.Source;
 import com.linecorp.bot.model.event.source.UserSource;
+import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.message.template.CarouselColumn;
@@ -76,8 +78,12 @@ public class BotTemplate {
             name = leagues.get(i).getName();
             desc = leagues.get(i).getDesc();
 
-            column = new CarouselColumn(image,
-                    name, desc, Collections.singletonList(new MessageAction("Jadwal", "Kompetisi Liga " + name)));
+            column = new CarouselColumn(image, name, desc,
+                    Arrays.asList(
+                            new MessageAction("Jadwal", "Kompetisi Liga " + name),
+                            new MessageAction("Sedang Berlangsung", "Berlangsung Kompetisi Liga " + name),
+                            new MessageAction("Hasil", "Hasil Kompetisi Liga " + name)
+            ));
 
             carouselColumns.add(column);
         }
@@ -88,7 +94,7 @@ public class BotTemplate {
 
     public TemplateMessage carouselLeagueSchedule(Match match) {
         int i;
-        String title, matchday, team, league, message, action, matchDate = null;
+        String title, matchday, team, teamHome, teamAway, league, message, action, matchDate = null;
         CarouselColumn column;
         List<CarouselColumn> carouselColumns = new ArrayList<>();
 
@@ -99,7 +105,10 @@ public class BotTemplate {
             return createBubble(message, action, action);
         } else {
             for (i = 0; i < match.getMatches().size(); i++) {
-                team = match.getMatches().get(i).getHomeTeam().getName() + "\nvs\n" + match.getMatches().get(i).getAwayTeam().getName();
+                teamHome = match.getMatches().get(i).getHomeTeam().getName();
+                teamAway = match.getMatches().get(i).getAwayTeam().getName();
+
+                team = teamHome + "\nvs\n" + teamAway;
                 league = match.getCompetition().getName();
                 matchday = String.valueOf(match.getMatches().get(i).getMatchday());
 
@@ -117,6 +126,60 @@ public class BotTemplate {
                 column = new CarouselColumn(null,
                         title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
                         " Jadwal Pertandingan " + league + ":\n\n" + team)));
+
+                carouselColumns.add(column);
+            }
+
+            CarouselTemplate carouselTemplate = new CarouselTemplate(carouselColumns);
+            return new TemplateMessage("Pertandingan", carouselTemplate);
+        }
+    }
+
+    public TemplateMessage carouselLeagueFinish(Boolean play, Match match) {
+        int i;
+        String title, matchday, team, league, message, action, matchDate = null;
+        String teamHome, scoreHome, scoreAway, teamAway;
+        CarouselColumn column;
+        List<CarouselColumn> carouselColumns = new ArrayList<>();
+
+        if (match.getMatches() == null || match.getMatches().size() < 1) {
+            message = StringMessage.noCompetition();
+            action = StringMessage.showLeague();
+
+            return createBubble(message, action, action);
+        } else {
+            for (i = 0; i < match.getMatches().size(); i++) {
+                teamHome = match.getMatches().get(i).getHomeTeam().getName();
+                scoreHome = match.getMatches().get(i).getScore().getFullTime().getHomeTeam();
+                teamAway = match.getMatches().get(i).getAwayTeam().getName();
+                scoreAway = match.getMatches().get(i).getScore().getFullTime().getAwayTeam();
+
+                team = teamHome + "   " + scoreHome +
+                        "\nvs\n" +
+                        teamAway + "   " + scoreAway;
+                league = match.getCompetition().getName();
+                matchday = String.valueOf(match.getMatches().get(i).getMatchday());
+
+                try {
+                    Date date = CommonsUtils.inputDate().parse(match.getMatches().get(i).getUtcDate());
+                    if (date != null) {
+                        matchDate = CommonsUtils.outputDate().format(date);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                title = StringMessage.titleMatchDay(matchday, matchDate);
+
+                if (play) {
+                    column = new CarouselColumn(null,
+                            title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                            " Berlangsung Pertandingan " + league + ":\n\n" + team)));
+                } else {
+                    column = new CarouselColumn(null,
+                            title, team, Collections.singletonList(new MessageAction("Detail", "[" + (i + 1) + "]" +
+                            " Hasil Pertandingan " + league + ":\n\n" + team)));
+                }
 
                 carouselColumns.add(column);
             }

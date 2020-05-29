@@ -7,6 +7,11 @@ public class StringMessage {
                 "Aku akan menampilkan seminggu kedepan jadwal kompetisi liga yang akan dipilih.";
     }
 
+    public static String updateInfo() {
+        return "*UPDATED*\n" +
+                "Sekarang kamu bisa melihat pertandingan yang sedang berlangsung dan telah usai di tiap kompetisi";
+    }
+
     public static String greetingHelp() {
         return "Kamu bisa ketik 'bantu', untuk info lebih lanjut!";
     }
@@ -20,15 +25,31 @@ public class StringMessage {
     }
 
     public static String showLeague() {
-        return "lihat liga";
+        return "Lihat liga";
     }
 
     public static String competitionLeague() {
         return "kompetisi liga";
     }
 
+    public static String liveMatch() {
+        return "berlangsung kompetisi liga";
+    }
+
+    public static String finishMatch() {
+        return "hasil kompetisi liga";
+    }
+
     public static String matchSchedule() {
         return "jadwal pertandingan";
+    }
+
+    public static String matchLive() {
+        return "berlangsung pertandingan";
+    }
+
+    public static String matchResult() {
+        return "hasil pertandingan";
     }
 
     public static String txtHelp() {

@@ -1,0 +1,143 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "Hasil Pertandingan",
+        "size": "lg",
+        "weight": "bold",
+        "position": "relative",
+        "align": "center",
+        "wrap": true,
+        "color": "#FFFFFF"
+      }
+    ]
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "%1$s",
+        "weight": "bold",
+        "size": "xl",
+        "wrap": true,
+        "align": "start",
+        "contents": []
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "text",
+                "text": "%2$s",
+                "size": "xxl",
+                "align": "center",
+                "gravity": "center",
+                "weight": "bold"
+              },
+              {
+                "type": "filler"
+              },
+              {
+                "type": "text",
+                "text": "%3$s",
+                "size": "xxl",
+                "align": "center",
+                "gravity": "center",
+                "weight": "bold"
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "text",
+                "text": "%4$s",
+                "size": "md",
+                "align": "center",
+                "gravity": "center",
+                "wrap": true
+              },
+              {
+                "type": "text",
+                "text": "vs",
+                "size": "lg",
+                "align": "center",
+                "gravity": "center",
+                "wrap": true
+              },
+              {
+                "type": "text",
+                "text": "%5$s",
+                "size": "md",
+                "wrap": true,
+                "gravity": "center",
+                "align": "center"
+              }
+            ],
+            "spacing": "none"
+          },
+          {
+            "type": "spacer",
+            "size": "xxl"
+          }
+        ]
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "%6$s",
+            "size": "sm",
+            "align": "center",
+            "gravity": "center",
+            "wrap": true
+          },
+          {
+            "type": "text",
+            "text": "%7$s",
+            "size": "lg",
+            "gravity": "center",
+            "align": "center",
+            "wrap": true,
+            "margin": "sm",
+            "color": "#ff0000"
+          },
+          {
+            "type": "text",
+            "text": "%8$s",
+            "size": "md",
+            "align": "center",
+            "gravity": "center",
+            "wrap": true
+          }
+        ],
+        "margin": "xl"
+      },
+      {
+        "type": "spacer"
+      }
+    ]
+  },
+  "styles": {
+    "header": {
+      "backgroundColor": "#3498db"
+    }
+  }
+}
