@@ -9,7 +9,6 @@ import com.centaury.matchleague.service.BotService;
 import com.centaury.matchleague.service.BotTemplate;
 import com.centaury.matchleague.utils.CommonsUtils;
 import com.centaury.matchleague.utils.DataKompetisi;
-import com.centaury.matchleague.utils.StringMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineSignatureValidator;
 import com.linecorp.bot.model.action.MessageAction;
@@ -488,7 +487,7 @@ public class LineBotController {
                 textName.toLowerCase().contains(bundesligaLeague()) ||
                 textName.toLowerCase().contains(eredivisieLeague()) ||
                 textName.toLowerCase().contains(ligue1League())) {
-            getLeagueFinishedData(textName, nowDate, weekDate);
+            getLeagueFinishedData(textName, weekDate, nowDate);
         } else {
             handleFallbackMessage(replyToken, new UserSource(sender.getUserId()));
         }
@@ -738,7 +737,8 @@ public class LineBotController {
 
             ClassLoader classLoader = getClass().getClassLoader();
             String encoding = StandardCharsets.UTF_8.name();
-            String flexTemplate = IOUtils.toString(classLoader.getResourceAsStream("flex_detailjadwal.json"), encoding);
+            String flexTemplate = IOUtils.toString(Objects.requireNonNull(
+                    classLoader.getResourceAsStream("flex_detailjadwal.json")), encoding);
 
             String matchDate = "";
             try {
@@ -839,7 +839,8 @@ public class LineBotController {
 
                 ClassLoader classLoader = getClass().getClassLoader();
                 String encoding = StandardCharsets.UTF_8.name();
-                String flexTemplate = IOUtils.toString(classLoader.getResourceAsStream("flex_detailhasil.json"), encoding);
+                String flexTemplate = IOUtils.toString(Objects.requireNonNull(
+                        classLoader.getResourceAsStream("flex_detailhasil.json")), encoding);
 
                 String matchDate = "";
                 try {

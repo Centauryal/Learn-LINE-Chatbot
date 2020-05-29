@@ -23,7 +23,7 @@ public class DataKompetisi {
 
         leagues.add(new League(
                 2014,
-                "https://ligajadwal.herokuapp.com/laliga_santander",
+                "https://ligajadwal.herokuapp.com/image/laliga_santander",
                 "LaLiga Santander",
                 "Liga tertinggi dalam sistem liga sepak bola di Spanyol."));
 

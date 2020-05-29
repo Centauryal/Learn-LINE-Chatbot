@@ -3,7 +3,6 @@ package com.centaury.matchleague.service;
 import com.centaury.matchleague.model.League;
 import com.centaury.matchleague.model.match.Match;
 import com.centaury.matchleague.model.match.MatchesItem;
-import com.centaury.matchleague.model.match.Score;
 import com.centaury.matchleague.utils.CommonsUtils;
 import com.centaury.matchleague.utils.StringMessage;
 import com.linecorp.bot.model.action.MessageAction;
@@ -11,7 +10,6 @@ import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
 import com.linecorp.bot.model.event.source.Source;
 import com.linecorp.bot.model.event.source.UserSource;
-import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.message.template.CarouselColumn;
@@ -21,9 +19,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -81,9 +77,9 @@ public class BotTemplate {
             column = new CarouselColumn(image, name, desc,
                     Arrays.asList(
                             new MessageAction("Jadwal", "Kompetisi Liga " + name),
-                            new MessageAction("Sedang Berlangsung", "Berlangsung Kompetisi Liga " + name),
-                            new MessageAction("Hasil", "Hasil Kompetisi Liga " + name)
-            ));
+                            new MessageAction("Sedang Berlangsung", "Berlangsung Kompetisi " + name),
+                            new MessageAction("Hasil", "Hasil Kompetisi " + name)
+                    ));
 
             carouselColumns.add(column);
         }

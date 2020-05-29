@@ -25,7 +25,7 @@ public class StringMessage {
     }
 
     public static String showLeague() {
-        return "Lihat liga";
+        return "lihat liga";
     }
 
     public static String competitionLeague() {
@@ -33,11 +33,11 @@ public class StringMessage {
     }
 
     public static String liveMatch() {
-        return "berlangsung kompetisi liga";
+        return "berlangsung kompetisi";
     }
 
     public static String finishMatch() {
-        return "hasil kompetisi liga";
+        return "hasil kompetisi";
     }
 
     public static String matchSchedule() {
